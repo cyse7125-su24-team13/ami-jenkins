@@ -34,7 +34,7 @@ jobs:
         -var 'aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}' \
         -var 'aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}' \
         -var 'region=${{ secrets.AWS_REGION }}' \
-        -var 'source-ami=${{ secrets.SOURCE_AMI}}' \
+        -var 'source_ami=${{ secrets.SOURCE_AMI}}' \
         packer/jenkins-ami.pkr.hcl
 
     - name: packer build template
