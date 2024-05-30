@@ -27,9 +27,10 @@ jobs:
 
     - name: Packer Validate
       run: |
+        cd packer/
         packer init jenkins-ami.pkr.hcl
-        packer validate -var aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }} -var aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} jenkins-ami.pkr.hcl
+        packer validate -var aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }} -var aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} -var region=${{ secrets.AWS_REGION }} -var source_ami=${{ secrets.SOURCE_AMI }} jenkins-ami.pkr.hcl
 
     - name: Packer Build
       run: |
-        packer build -var aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }} -var aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} jenkins-ami.pkr.hcl
+        packer build -var aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }} -var aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} -var region=${{ secrets.AWS_REGION }} -var source_ami=${{ secrets.SOURCE_AMI }} jenkins-ami.pkr.hcl
