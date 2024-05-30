@@ -27,9 +27,9 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y packer
-        
+
     - name: Add required plugins
-      run: packer init .
+      run: packer init packer/jenkins-ami.pkr.hcl
 
     - name: Validate Packer template
       run: | 
