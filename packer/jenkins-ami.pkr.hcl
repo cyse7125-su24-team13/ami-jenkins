@@ -49,6 +49,7 @@ build {
       "sudo apt-get install -y jenkins",
       "sudo apt-get install -y nginx",
       "sudo apt-get install -y certbot python3-certbot-nginx",
+      
     ]
   }
 
@@ -70,17 +71,23 @@ build {
       "strategy.setAllowAnonymousRead(false)",
       "Jenkins.instance.setAuthorizationStrategy(strategy)",
       "Jenkins.instance.save()",
-      "EOF'"
+      "EOF'",
     ]
   }
   
   provisioner "shell" {
-  inline = [
-    "sudo sed -i 's/^Environment=\"JAVA_OPTS=-Djava\\.awt\\.headless=true\"$/Environment=\"JAVA_OPTS=-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false\"/' /lib/systemd/system/jenkins.service",
-    "sudo systemctl daemon-reload",
-    "sudo systemctl restart jenkins"
-  ]
-}
-
+    inline = [
+      "sudo sed -i 's/^Environment=\"JAVA_OPTS=-Djava\\.awt\\.headless=true\"$/Environment=\"JAVA_OPTS=-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false\"/' /lib/systemd/system/jenkins.service",
+      "sudo systemctl daemon-reload",
+      "sudo systemctl restart jenkins",
+      "sleep 30",  // Wait for Jenkins to start
+      "JENKINS_CLI=jenkins-cli.jar",
+      "wget http://localhost:8080/jnlpJars/jenkins-cli.jar -O $JENKINS_CLI",
+      "java -jar $JENKINS_CLI -s http://localhost:8080/ -auth admin:admin123 install-plugin git",
+      "java -jar $JENKINS_CLI -s http://localhost:8080/ -auth admin:admin123 install-plugin workflow-aggregator",
+      "java -jar $JENKINS_CLI -s http://localhost:8080/ -auth admin:admin123 install-plugin docker-plugin",
+      "sudo systemctl stop jenkins",
+    ]
+  }
 
 }
