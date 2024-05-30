@@ -1,0 +1,35 @@
+name: Create AMI
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  create-ami:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up AWS CLI
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Create AMI
+      id: create_ami
+      run: |
+        date=$(date +%Y%m%d%H%M%S)
+        ami_name="github-ami-$date"
+        ami_id=$(aws ec2 create-image --instance-id ${{ secrets.INSTANCE_ID }} --name $ami_name --no-reboot --output text --query 'ImageId')
+        echo "AMI ID: $ami_id"
+        echo "ami-id=$ami_id" >> $GITHUB_ENV
+
+    - name: Tag AMI
+      run: |
+        ami_name="github-ami-$(date +%Y%m%d%H%M%S)"
+        aws ec2 create-tags --resources ${{ env.ami-id }} --tags Key=Name,Value=$ami_name
