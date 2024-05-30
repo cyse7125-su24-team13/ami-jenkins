@@ -20,16 +20,25 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
-    - name: Create AMI
-      id: create_ami
+    - name: Install Packer
       run: |
-        date=$(date +%Y%m%d%H%M%S)
-        ami_name="github-ami-$date"
-        ami_id=$(aws ec2 create-image --instance-id ${{ secrets.INSTANCE_ID }} --name $ami_name --no-reboot --output text --query 'ImageId')
-        echo "AMI ID: $ami_id"
-        echo "ami-id=$ami_id" >> $GITHUB_ENV
+        sudo apt-get update
+        sudo apt-get install -y packer
 
-    - name: Tag AMI
-      run: |
-        ami_name="github-ami-$(date +%Y%m%d%H%M%S)"
-        aws ec2 create-tags --resources ${{ env.ami-id }} --tags Key=Name,Value=$ami_name
+    - name: Validate Packer template
+      run: | 
+        packer validate  \
+        -var 'aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}' \
+        -var 'aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}' \
+        -var 'region=${{ secrets.AWS_REGION }}' \
+        -var 'source-ami= ami-0a24670a6532ea110' \
+        jenkins-ami.pkr.hcl
+
+    - name: packer build template
+      run: | 
+        packer build  \
+        -var 'aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}' \
+        -var 'aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}' \
+        -var 'region=${{ secrets.AWS_REGION }}' \
+        -var 'source-ami= ami-0a24670a6532ea110' \
+        jenkins-ami.pkr.hcl
