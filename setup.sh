@@ -16,11 +16,7 @@ sudo systemctl daemon-reload
 sudo systemctl restart jenkins
 
 # Wait for Jenkins to be fully up and running
-echo "Waiting for Jenkins to start..."
-while ! curl -s http://localhost:8080/login > /dev/null; do
-    sleep 10
-done
-echo "Jenkins is up and running"
+sleep 60
 
 JENKINS_CLI=jenkins-cli.jar
 wget http://localhost:8080/jnlpJars/jenkins-cli.jar -O $JENKINS_CLI
