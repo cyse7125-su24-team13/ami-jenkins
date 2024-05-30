@@ -25,14 +25,17 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y packer
 
-    - name: Add required plugins
-      run: packer init packer/jenkins-ami.pkr.hcl
+    - name: Set up Packer Environment Variables
+      run: |
+        echo "JENKINS_ADMIN_USERNAME=${{ secrets.JENKINS_ADMIN_USERNAME }}" >> $GITHUB_ENV
+        echo "JENKINS_ADMIN_PASSWORD=${{ secrets.JENKINS_ADMIN_PASSWORD }}" >> $GITHUB_ENV
 
-    - name: Validate Packer template
-      run: | 
-        packer validate  \
-        -var 'aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}' \
-        -var 'aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}' \
-        -var 'region=${{ secrets.AWS_REGION }}' \
-        -var 'source_ami=${{ secrets.SOURCE_AMI}}' \
-        packer/jenkins-ami.pkr.hcl
+    - name: Packer Validate
+      run: |
+        cd packer/
+        packer init jenkins-ami.pkr.hcl
+        packer validate -var aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }} -var aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} -var region=${{ secrets.AWS_REGION }} -var source_ami=${{ secrets.SOURCE_AMI }} jenkins-ami.pkr.hcl
+
+    - name: Packer Build
+      run: |
+        packer build -var aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }} -var aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} -var region=${{ secrets.AWS_REGION }} -var source_ami=${{ secrets.SOURCE_AMI }} jenkins-ami.pkr.hcl
