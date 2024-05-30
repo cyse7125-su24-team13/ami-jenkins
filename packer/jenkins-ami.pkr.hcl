@@ -95,4 +95,14 @@ build {
       "EOF'"
     ]
   }
+  
+  provisioner "shell" {
+  inline = [
+    "sudo sed -i 's/^Environment=\"JAVA_OPTS=-Djava\\.awt\\.headless=true\"$/Environment=\"JAVA_OPTS=-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false\"/' /lib/systemd/system/jenkins.service",
+    "sudo systemctl daemon-reload",
+    "sudo systemctl restart jenkins"
+  ]
+}
+
+
 }
