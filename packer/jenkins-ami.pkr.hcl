@@ -26,8 +26,6 @@ packer {
 }
 
 source "amazon-ebs" "ubuntu" {
-  access_key    = var.aws_access_key
-  secret_key    = var.aws_secret_key
   region        = var.region
   source_ami    = var.source_ami
   instance_type = "t2.micro"
