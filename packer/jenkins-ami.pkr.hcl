@@ -29,7 +29,7 @@ source "amazon-ebs" "ubuntu" {
   access_key    = var.aws_access_key
   secret_key    = var.aws_secret_key
   region        = var.region
-  source_ami    = "ami-0a24670a6532ea110"
+  source_ami    = var.source-ami
   instance_type = "t2.micro"
   ssh_username  = "ubuntu"
   ami_name      = "jenkins-ami-{{timestamp}}"
