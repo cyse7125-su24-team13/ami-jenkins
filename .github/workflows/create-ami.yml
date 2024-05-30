@@ -27,6 +27,9 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y packer
+        
+    - name: Add required plugins
+      run: packer init .
 
     - name: Validate Packer template
       run: | 
