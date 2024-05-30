@@ -1,7 +1,7 @@
 name: build AMI
 
 on:
-  push:  # Run on each commit to any branch
+  push:
     branches:
       - main
 

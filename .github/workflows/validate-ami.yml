@@ -1,9 +1,6 @@
 name: validate packer AMI
 
 on:
-  push:  # Run on each commit to any branch
-    branches:
-      - '**'
   pull_request:
     branches:
       - main
