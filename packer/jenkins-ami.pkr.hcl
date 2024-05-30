@@ -54,28 +54,6 @@ build {
 
   provisioner "shell" {
     inline = [
-      "sudo rm /etc/nginx/sites-enabled/default",
-      "sudo bash -c 'cat > /etc/nginx/sites-available/jenkins << EOF",
-      "server {",
-      "    listen 80;",
-      "    server_name rahhulganeesh.me ;",
-      "    location / {",
-      "        proxy_pass http://127.0.0.1:8080;",
-      "        proxy_set_header Host \\$host;",
-      "        proxy_set_header X-Real-IP \\$remote_addr;",
-      "        proxy_set_header X-Forwarded-For \\$proxy_add_x_forwarded_for;",
-      "        proxy_set_header X-Forwarded-Proto \\$scheme;",
-      "    }",
-      "}",
-      "EOF'",
-      "sudo ln -s /etc/nginx/sites-available/jenkins /etc/nginx/sites-enabled/",
-      "sudo systemctl restart nginx",
-      //"sudo certbot --nginx -d rahhulganeesh.me  --non-interactive --agree-tos -m vakiti.sai98@gmail.com",
-    ]
-  }
-
-  provisioner "shell" {
-    inline = [
       "sudo mkdir -p /var/lib/jenkins/init.groovy.d",
       "sudo bash -c 'cat > /var/lib/jenkins/init.groovy.d/create-admin-user.groovy << EOF",
       "import jenkins.model.*",
