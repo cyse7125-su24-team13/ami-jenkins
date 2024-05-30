@@ -38,56 +38,25 @@ source "amazon-ebs" "ubuntu" {
 build {
   sources = ["source.amazon-ebs.ubuntu"]
 
-  provisioner "shell" {
-    inline = [
-      "sudo apt-get update",
-      "sudo apt-get upgrade -y",
-      "sudo apt-get install -y openjdk-11-jdk",
-      "curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee /usr/share/keyrings/jenkins-keyring.asc > /dev/null",
-      "echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null",
-      "sudo apt-get update",
-      "sudo apt-get install -y jenkins",
-      "sudo apt-get install -y nginx",
-      "sudo apt-get install -y certbot python3-certbot-nginx",
-      
-    ]
+  provisioner "file" {
+    source      = "../plugins.txt"
+    destination = "/tmp/plugins.txt"
+  }
+
+  provisioner "file" {
+    source      = "../create-admin-user.groovy"
+    destination = "/tmp/create-admin-user.groovy"
+  }
+
+  provisioner "file" {
+    source      = "../setup.sh"
+    destination = "/tmp/setup.sh"
   }
 
   provisioner "shell" {
     inline = [
-      "sudo mkdir -p /var/lib/jenkins/init.groovy.d",
-      "sudo bash -c 'cat > /var/lib/jenkins/init.groovy.d/create-admin-user.groovy << EOF",
-      "import jenkins.model.*",
-      "import hudson.security.*",
-      "println \"--> creating admin user\"",
-      "def adminUsername = \"admin\"",
-      "def adminPassword = \"admin123\"",
-      "assert adminPassword != null : \"No ADMIN_USERNAME env var provided, but required\"",
-      "assert adminPassword != null : \"No ADMIN_PASSWORD env var provided, but required\"",
-      "def hudsonRealm = new HudsonPrivateSecurityRealm(false)",
-      "hudsonRealm.createAccount(adminUsername, adminPassword)",
-      "Jenkins.instance.setSecurityRealm(hudsonRealm)",
-      "def strategy = new FullControlOnceLoggedInAuthorizationStrategy()",
-      "strategy.setAllowAnonymousRead(false)",
-      "Jenkins.instance.setAuthorizationStrategy(strategy)",
-      "Jenkins.instance.save()",
-      "EOF'",
+      "chmod +x /tmp/setup.sh",
+      "sudo /tmp/setup.sh"
     ]
   }
-  
-  provisioner "shell" {
-    inline = [
-      "sudo sed -i 's/^Environment=\"JAVA_OPTS=-Djava\\.awt\\.headless=true\"$/Environment=\"JAVA_OPTS=-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false\"/' /lib/systemd/system/jenkins.service",
-      "sudo systemctl daemon-reload",
-      "sudo systemctl restart jenkins",
-      "sleep 30",  // Wait for Jenkins to start
-      "JENKINS_CLI=jenkins-cli.jar",
-      "wget http://localhost:8080/jnlpJars/jenkins-cli.jar -O $JENKINS_CLI",
-      "java -jar $JENKINS_CLI -s http://localhost:8080/ -auth admin:admin123 install-plugin git",
-      "java -jar $JENKINS_CLI -s http://localhost:8080/ -auth admin:admin123 install-plugin workflow-aggregator",
-      "java -jar $JENKINS_CLI -s http://localhost:8080/ -auth admin:admin123 install-plugin docker-plugin",
-      "sudo systemctl stop jenkins",
-    ]
-  }
-
 }

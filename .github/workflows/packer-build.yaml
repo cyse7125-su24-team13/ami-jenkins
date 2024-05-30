@@ -1,0 +1,35 @@
+name: Packer Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install Packer
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y software-properties-common
+        sudo apt-add-repository --yes --update ppa:ansible/ansible
+        sudo apt-get install -y packer
+
+    - name: Set up Packer Environment Variables
+      run: |
+        echo "JENKINS_ADMIN_USERNAME=${{ secrets.JENKINS_ADMIN_USERNAME }}" >> $GITHUB_ENV
+        echo "JENKINS_ADMIN_PASSWORD=${{ secrets.JENKINS_ADMIN_PASSWORD }}" >> $GITHUB_ENV
+
+    - name: Packer Validate
+      run: |
+        packer init jenkins-ami.pkr.hcl
+        packer validate -var aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }} -var aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} jenkins-ami.pkr.hcl
+
+    - name: Packer Build
+      run: |
+        packer build -var aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }} -var aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} jenkins-ami.pkr.hcl

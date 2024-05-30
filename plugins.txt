@@ -1,0 +1,15 @@
+git
+workflow-aggregator
+docker-plugin
+matrix-auth
+blueocean
+credentials-binding
+email-ext
+ssh-slaves
+pipeline-github-lib
+pipeline-stage-view
+github-branch-source
+pipeline-model-definition
+pipeline-utility-steps
+ldap
+authentication-tokens
