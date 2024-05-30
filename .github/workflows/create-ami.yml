@@ -35,7 +35,7 @@ jobs:
         -var 'aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}' \
         -var 'region=${{ secrets.AWS_REGION }}' \
         -var 'source-ami= ami-0a24670a6532ea110' \
-        jenkins-ami.pkr.hcl
+        packer/jenkins-ami.pkr.hcl
 
     - name: packer build template
       run: | 
@@ -44,4 +44,4 @@ jobs:
         -var 'aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}' \
         -var 'region=${{ secrets.AWS_REGION }}' \
         -var 'source-ami= ami-0a24670a6532ea110' \
-        jenkins-ami.pkr.hcl
+        packer/jenkins-ami.pkr.hcl
