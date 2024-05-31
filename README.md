@@ -20,7 +20,7 @@ This repository contains the necessary files and instructions to create a custom
    aws configure --profile prod
 
 ### Packer Build Commands
-git clone https://github.com/cyse7125-su24-teamNN/ami-jenkins.git
+git clone https://github.com/cyse7125-su24-teamNN/ami-jenkins.git.
     ```bash
     cd ami-jenkins
     packer validate jenkins-ami.pkr.hcl
