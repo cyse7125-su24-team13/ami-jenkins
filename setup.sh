@@ -19,5 +19,5 @@ sleep 30
 
 JENKINS_CLI=jenkins-cli.jar
 wget http://localhost:8080/jnlpJars/jenkins-cli.jar -O $JENKINS_CLI
-cat /tmp/plugins.txt | xargs -I {} java -jar jenkins-cli.jar -s http://localhost:8080/ -auth admin:admin123 install-plugin {}
+cat /tmp/plugins.txt | xargs -I {} java -jar jenkins-cli.jar -s http://localhost:8080/ -auth $1:$2 install-plugin {}
 sudo systemctl stop jenkins
