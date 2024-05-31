@@ -77,7 +77,7 @@ build {
   provisioner "shell" {
   inline = [
     "chmod +x /tmp/setup.sh",
-    "sudo /tmp/setup.sh"
+    "sudo /tmp/setup.sh ${var.JENKINS_ADMIN_USERNAME} ${var.JENKINS_ADMIN_PASSWORD}"
   ]
 }
 
