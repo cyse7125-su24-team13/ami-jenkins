@@ -20,7 +20,6 @@ packer {
 }
 
 source "amazon-ebs" "ubuntu" {
-  region        = var.region
   source_ami    = var.source_ami
   instance_type = "t2.micro"
   ssh_username  = "ubuntu"
