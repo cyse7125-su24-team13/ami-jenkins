@@ -30,7 +30,8 @@ jobs:
         cd packer/
         packer init jenkins-ami.pkr.hcl
         packer validate -var JENKINS_ADMIN_USERNAME=${{ secrets.JENKINS_ADMIN_USERNAME }} -var JENKINS_ADMIN_PASSWORD=${{ secrets.JENKINS_ADMIN_PASSWORD }} -var source_ami=${{ secrets.SOURCE_AMI }} jenkins-ami.pkr.hcl
-
+        
+        
     - name: Packer Build
       run: |
         cd packer/
