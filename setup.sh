@@ -15,8 +15,7 @@ sudo sed -i 's/^Environment="JAVA_OPTS=-Djava\\.awt\\.headless=true"$/Environmen
 sudo systemctl daemon-reload
 sudo systemctl restart jenkins
 
-# Wait for Jenkins to be fully up and running
-sleep 60
+sleep 30
 
 JENKINS_CLI=jenkins-cli.jar
 wget http://localhost:8080/jnlpJars/jenkins-cli.jar -O $JENKINS_CLI
