@@ -1,12 +1,12 @@
-name: build AMI
+name: build Jenkins AMI
 
 on:
-  push:
+  pull_request:
     branches:
       - main
 
 jobs:
-  build-ami:
+  build_packer_image:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,23 +25,13 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y packer
 
-    - name: Add required plugins
-      run: packer init packer/jenkins-ami.pkr.hcl
+    - name: Packer Validate
+      run: |
+        cd packer/
+        packer init jenkins-ami.pkr.hcl
+        packer validate -var JENKINS_ADMIN_USERNAME=${{ secrets.JENKINS_ADMIN_USERNAME }} -var JENKINS_ADMIN_PASSWORD=${{ secrets.JENKINS_ADMIN_PASSWORD }} -var source_ami=${{ secrets.SOURCE_AMI }} jenkins-ami.pkr.hcl
 
-    - name: Validate Packer template
-      run: | 
-        packer validate  \
-        -var 'aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}' \
-        -var 'aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}' \
-        -var 'region=${{ secrets.AWS_REGION }}' \
-        -var 'source_ami=${{ secrets.SOURCE_AMI}}' \
-        packer/jenkins-ami.pkr.hcl
-
-    - name: packer build template
-      run: | 
-        packer build  \
-        -var 'aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}' \
-        -var "aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
-        -var 'region=${{ secrets.AWS_REGION }}' \
-        -var 'source_ami=${{ secrets.SOURCE_AMI}}' \
-        packer/jenkins-ami.pkr.hcl
+    - name: Packer Build
+      run: |
+        cd packer/
+        packer build -var JENKINS_ADMIN_USERNAME=${{ secrets.JENKINS_ADMIN_USERNAME }} -var JENKINS_ADMIN_PASSWORD=${{ secrets.JENKINS_ADMIN_PASSWORD }} -var source_ami=${{ secrets.SOURCE_AMI }} jenkins-ami.pkr.hcl

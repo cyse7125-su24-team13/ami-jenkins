@@ -14,7 +14,9 @@ sudo mv /tmp/create-admin-user.groovy /var/lib/jenkins/init.groovy.d/
 sudo sed -i 's/^Environment="JAVA_OPTS=-Djava\\.awt\\.headless=true"$/Environment="JAVA_OPTS=-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"/' /lib/systemd/system/jenkins.service
 sudo systemctl daemon-reload
 sudo systemctl restart jenkins
-sleep 30  # Wait for Jenkins to start
+
+sleep 30
+
 JENKINS_CLI=jenkins-cli.jar
 wget http://localhost:8080/jnlpJars/jenkins-cli.jar -O $JENKINS_CLI
 cat /tmp/plugins.txt | xargs -I {} java -jar jenkins-cli.jar -s http://localhost:8080/ -auth admin:admin123 install-plugin {}
