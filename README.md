@@ -27,4 +27,3 @@ git clone https://github.com/cyse7125-su24-teamNN/ami-jenkins.git.
     packer build jenkins-ami.pkr.hcl
 
 
-
