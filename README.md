@@ -20,6 +20,7 @@ This repository contains the necessary files and instructions to create a custom
 
 ### Packer Build Commands
 git clone https://github.com/cyse7125-su24-teamNN/ami-jenkins.git
-cd ami-jenkins
-packer validate jenkins-ami.pkr.hcl
-packer build jenkins-ami.pkr.hcl
+    ```bash
+    cd ami-jenkins
+    packer validate jenkins-ami.pkr.hcl
+    packer build jenkins-ami.pkr.hcl
