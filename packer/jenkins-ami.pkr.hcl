@@ -1,14 +1,8 @@
-variable "aws_access_key" {
-  type      = string
-  sensitive = true
+variable "JENKINS_ADMIN_USERNAME" {
+  type    = string
 }
 
-variable "aws_secret_key" {
-  type      = string
-  sensitive = true
-}
-
-variable "region" {
+variable "JENKINS_ADMIN_PASSWORD" {
   type    = string
 }
 
@@ -36,29 +30,24 @@ source "amazon-ebs" "ubuntu" {
 build {
   sources = ["source.amazon-ebs.ubuntu"]
 
-  provisioner "shell" {
-    inline = [
-      "sudo apt-get update",
-      "sudo apt-get upgrade -y",
-      "sudo apt-get install -y openjdk-11-jdk",
-      "curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee /usr/share/keyrings/jenkins-keyring.asc > /dev/null",
-      "echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null",
-      "sudo apt-get update",
-      "sudo apt-get install -y jenkins",
-      "sudo apt-get install -y nginx",
-      "sudo apt-get install -y certbot python3-certbot-nginx",
-    ]
+  provisioner "file" {
+    source      = "../plugins.txt"
+    destination = "/tmp/plugins.txt"
+  }
+
+  provisioner "file" {
+    source      = "../setup.sh"
+    destination = "/tmp/setup.sh"
   }
 
   provisioner "shell" {
     inline = [
-      "sudo mkdir -p /var/lib/jenkins/init.groovy.d",
-      "sudo bash -c 'cat > /var/lib/jenkins/init.groovy.d/create-admin-user.groovy << EOF",
+      "sudo bash -c 'cat > /tmp/create-admin-user.groovy << EOF",
       "import jenkins.model.*",
       "import hudson.security.*",
       "println \"--> creating admin user\"",
-      "def adminUsername = \"admin\"",
-      "def adminPassword = \"admin123\"",
+      "def adminUsername = \"${var.JENKINS_ADMIN_USERNAME}\"",
+      "def adminPassword = \"${var.JENKINS_ADMIN_PASSWORD}\"",
       "assert adminPassword != null : \"No ADMIN_USERNAME env var provided, but required\"",
       "assert adminPassword != null : \"No ADMIN_PASSWORD env var provided, but required\"",
       "def hudsonRealm = new HudsonPrivateSecurityRealm(false)",
@@ -71,14 +60,12 @@ build {
       "EOF'"
     ]
   }
-  
+
   provisioner "shell" {
   inline = [
-    "sudo sed -i 's/^Environment=\"JAVA_OPTS=-Djava\\.awt\\.headless=true\"$/Environment=\"JAVA_OPTS=-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false\"/' /lib/systemd/system/jenkins.service",
-    "sudo systemctl daemon-reload",
-    "sudo systemctl restart jenkins"
+    "chmod +x /tmp/setup.sh",
+    "sudo /tmp/setup.sh ${var.JENKINS_ADMIN_USERNAME} ${var.JENKINS_ADMIN_PASSWORD}"
   ]
 }
-
 
 }
