@@ -1,17 +1,3 @@
-// variable "aws_access_key" {
-//   type      = string
-//   sensitive = true
-// }
-
-// variable "aws_secret_key" {
-//   type      = string
-//   sensitive = true
-// }
-
-// variable "region" {
-//   type    = string
-// }
-
 variable "JENKINS_ADMIN_USERNAME" {
   type    = string
 }
@@ -77,7 +63,7 @@ build {
   provisioner "shell" {
   inline = [
     "chmod +x /tmp/setup.sh",
-    "sudo /tmp/setup.sh"
+    "sudo /tmp/setup.sh ${var.JENKINS_ADMIN_USERNAME} ${var.JENKINS_ADMIN_PASSWORD}"
   ]
 }
 
