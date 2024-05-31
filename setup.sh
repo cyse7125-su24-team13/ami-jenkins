@@ -11,7 +11,7 @@ sudo apt-get install -y nginx
 sudo apt-get install -y certbot python3-certbot-nginx
 sudo mkdir -p /var/lib/jenkins/init.groovy.d
 sudo mv /tmp/create-admin-user.groovy /var/lib/jenkins/init.groovy.d/
-sudo sed -i 's/^Environment="JAVA_OPTS=-Djava\\.awt\\.headless=true"$/Environment="JAVA_OPTS=-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"/' /lib/systemd/system/jenkins.service
+sudo sed -i 's/^Environment="JAVA_OPTS=-Djava.awt.headless=true"$/Environment="JAVA_OPTS=-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"/' /lib/systemd/system/jenkins.service
 sudo systemctl daemon-reload
 sudo systemctl restart jenkins
 
