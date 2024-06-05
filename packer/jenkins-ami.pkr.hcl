@@ -17,7 +17,7 @@ packer {
       version = "~> 1"
     }
   }
-}
+
 
 source "amazon-ebs" "ubuntu" {
   source_ami    = var.source_ami
