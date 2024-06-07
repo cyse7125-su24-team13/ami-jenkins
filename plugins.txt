@@ -1,6 +1,9 @@
 git
 workflow-aggregator
 docker-plugin
+job-dsl
+envinject
+ws-cleanup
 matrix-auth
 blueocean
 credentials-binding
