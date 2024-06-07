@@ -29,10 +29,24 @@ jobs:
       run: |
         cd packer/
         packer init jenkins-ami.pkr.hcl
-        packer validate -var JENKINS_ADMIN_USERNAME=${{ secrets.JENKINS_ADMIN_USERNAME }} -var JENKINS_ADMIN_PASSWORD=${{ secrets.JENKINS_ADMIN_PASSWORD }} -var source_ami=${{ secrets.SOURCE_AMI }} jenkins-ami.pkr.hcl
+        packer validate -var JENKINS_ADMIN_USERNAME=${{ secrets.JENKINS_ADMIN_USERNAME }} \
+        -var JENKINS_ADMIN_PASSWORD=${{ secrets.JENKINS_ADMIN_PASSWORD }} \
+        -var source_ami=${{ secrets.SOURCE_AMI }} \
+        -var GITHUB_USERNAME=${{ secrets.GHUB_USERNAME }} \
+        -var GITHUB_PASSWORD=${{ secrets.GHUB_PASSWORD }} \
+        -var DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }} \
+        -var DOCKERHUB_PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }} \
+        jenkins-ami.pkr.hcl
         
         
     - name: Packer Build
       run: |
         cd packer/
-        packer build -var JENKINS_ADMIN_USERNAME=${{ secrets.JENKINS_ADMIN_USERNAME }} -var JENKINS_ADMIN_PASSWORD=${{ secrets.JENKINS_ADMIN_PASSWORD }} -var source_ami=${{ secrets.SOURCE_AMI }} jenkins-ami.pkr.hcl
+        packer build -var JENKINS_ADMIN_USERNAME=${{ secrets.JENKINS_ADMIN_USERNAME }} \
+        -var JENKINS_ADMIN_PASSWORD=${{ secrets.JENKINS_ADMIN_PASSWORD }} \
+        -var source_ami=${{ secrets.SOURCE_AMI }} \
+        -var GITHUB_USERNAME=${{ secrets.GHUB_USERNAME }} \
+        -var GITHUB_PASSWORD=${{ secrets.GHUB_PASSWORD }} \
+        -var DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }} \
+        -var DOCKERHUB_PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }} \
+        jenkins-ami.pkr.hcl
