@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
+  <scope>GLOBAL</scope>
+  <id>docker-hub-credentials</id>
+  <description>Dockerhub Username and password credential</description>
+  <username>${DOCKERHUB_USERNAME}</username>
+  <password>${DOCKERHUB_PASSWORD}</password>
+</com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>

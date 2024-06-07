@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
+  <scope>GLOBAL</scope>
+  <id>github-token</id>
+  <description>github Username and password credential</description>
+  <username>${GITHUB_USERNAME}</username>
+  <password>${GITHUB_PASSWORD}</password>
+</com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>

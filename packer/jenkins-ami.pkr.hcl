@@ -6,6 +6,22 @@ variable "JENKINS_ADMIN_PASSWORD" {
   type    = string
 }
 
+variable "GITHUB_USERNAME" {
+  type    = string
+}
+
+variable "GITHUB_PASSWORD" {
+  type    = string
+}
+
+variable "DOCKERHUB_USERNAME" {
+  type    = string
+}
+
+variable "DOCKERHUB_PASSWORD" {
+  type    = string
+}
+
 variable "source_ami" {
   type    = string
 }
@@ -39,6 +55,33 @@ build {
     destination = "/tmp/setup.sh"
   }
 
+  provisioner "file" {
+    source      = "../seed-job.groovy"
+    destination = "/tmp/seed-job.groovy"
+  }
+
+  provisioner "file" {
+    source      = "../jenkins-credentials/github-token.xml"
+    destination = "/tmp/github-token.xml"
+  }
+
+  provisioner "file" {
+    source      = "../jenkins-credentials/dockerhub-token.xml"
+    destination = "/tmp/dockerhub-token.xml"
+  }
+
+  provisioner "shell"{
+    inline = [
+      "export GITHUB_USERNAME=\"${var.GITHUB_USERNAME}\"",
+      "export GITHUB_PASSWORD=\"${var.GITHUB_PASSWORD}\"",
+      "export AUTH=\"${var.JENKINS_ADMIN_USERNAME}:${var.JENKINS_ADMIN_PASSWORD}\"",
+      "export DOCKERHUB_USERNAME=\"${var.DOCKERHUB_USERNAME}\"",
+      "export DOCKERHUB_PASSWORD=\"${var.DOCKERHUB_PASSWORD}\"",
+      "envsubst < /tmp/github-token.xml > /tmp/final-github-token.xml",
+      "envsubst < /tmp/dockerhub-token.xml > /tmp/final-dockerhub-token.xml",
+    ]
+  }
+
   provisioner "shell" {
     inline = [
       "sudo bash -c 'cat > /tmp/create-admin-user.groovy << EOF",
@@ -59,6 +102,7 @@ build {
       "EOF'"
     ]
   }
+
 
   provisioner "shell" {
   inline = [
