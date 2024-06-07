@@ -7,7 +7,7 @@ import javaposse.jobdsl.plugin.LookupStrategy
 
 String jobName = "build-push-docker-image"
 String jobDsl = """
-pipelineJob('build-push-docker-image') {
+pipelineJob('build-push-docker-image-pipeline') {
     description 'Pipeline job to build and push Docker image with multiplatform support.'
 
     // Environment variables can be set here if required
