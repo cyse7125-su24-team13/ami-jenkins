@@ -5,6 +5,7 @@ multibranchPipelineJob('static-site') {
         remote('https://github.com/cyse7125-su24-team13/static-site.git')
         credentialsId('github-token')
         includes('*')
+
     }
   }
 
