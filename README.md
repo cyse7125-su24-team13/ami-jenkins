@@ -27,5 +27,5 @@ git clone https://github.com/cyse7125-su24-teamNN/ami-jenkins.git.
     cd ami-jenkins
     packer validate jenkins-ami.pkr.hcl
     packer build jenkins-ami.pkr.hcl
-
+    hi
 
