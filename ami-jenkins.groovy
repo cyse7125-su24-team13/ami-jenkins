@@ -7,6 +7,7 @@ multibranchPipelineJob('ami-jenkins') {
         remote('https://github.com/cyse7125-su24-team13/ami-jenkins.git')
         credentialsId('github-token')
         includes('main')
+
     }
   }
 
