@@ -10,6 +10,7 @@ String prStatusCheckJobName_k8s = "pr-status-check-k8s-yaml"
 String prStatusCheckJobName_ami = "pr-status-check-ami-jenkins"
 
 String buildPushDockerJobDsl = """
+
 pipelineJob('build-push-docker-image-pipeline') {
     description 'Pipeline job to build and push Docker image with multiplatform support.'
 
