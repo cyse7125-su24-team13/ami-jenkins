@@ -1,5 +1,7 @@
 # ami-jenkins
 
+
+
 ## Overview
 This repository contains the necessary files and instructions to create a custom Jenkins AMI using Packer. The Jenkins instance will be set up with a reverse proxy (Caddy or Nginx) that obtains SSL certificates from Let's Encrypt.
 
