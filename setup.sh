@@ -70,7 +70,6 @@ rm packer_${PACKER_VERSION}_linux_amd64.zip
 CREDENTIAL_FILES=(
     "/tmp/final-github-token.xml"
     "/tmp/final-dockerhub-token.xml"
-    "/tmp/github-app-cred.xml"
 )
 
 # Upload each credential

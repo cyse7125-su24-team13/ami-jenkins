@@ -70,11 +70,6 @@ build {
     destination = "/tmp/dockerhub-token.xml"
   }
 
-  provisioner "file" {
-    source      = "../jenkins-credentials/github-app-cred.xml"
-    destination = "/tmp/github-app-cred.xml"
-  }
-
   provisioner "shell"{
     inline = [
       "export GITHUB_USERNAME=\"${var.GITHUB_USERNAME}\"",
