@@ -88,15 +88,6 @@ source /tmp/myenv/bin/activate
 pip install --upgrade pip
 pip install yamllint
 
-# Install Node.js and npm
-sudo apt-get install -y nodejs npm
-
-# Install commitlint
-sudo npm install -g @commitlint/{cli,config-conventional}
-
-# Create commitlint configuration file
-echo "module.exports = { extends: ['@commitlint/config-conventional'] };" | sudo tee /var/lib/jenkins/commitlint.config.js
-
 # Edit sudoers file to allow jenkins user to run commands without password
 echo "jenkins ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/jenkins
 
