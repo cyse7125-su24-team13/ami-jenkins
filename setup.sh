@@ -88,5 +88,8 @@ source /tmp/myenv/bin/activate
 pip install --upgrade pip
 pip install yamllint
 
+# Edit sudoers file to allow jenkins user to run commands without password
+echo "jenkins ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/jenkins
+
 # Stop Jenkins as the final step if needed
 sudo systemctl stop jenkins

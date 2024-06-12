@@ -37,7 +37,7 @@ packer {
 
 source "amazon-ebs" "ubuntu" {
   source_ami    = var.source_ami
-  instance_type = "t2.micro"
+  instance_type = "t2.small"
   ssh_username  = "ubuntu"
   ami_name      = "jenkins-ami-{{timestamp}}"
 }
