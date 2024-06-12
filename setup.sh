@@ -49,6 +49,23 @@ sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 # Add the current user to the Docker group
 sudo usermod -aG docker jenkins
 
+# Install unzip utility
+sudo apt-get install -y unzip
+
+# Install Terraform
+TERRAFORM_VERSION="1.7.3"
+wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+sudo mv terraform /usr/local/bin/
+rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+
+# Install Packer
+PACKER_VERSION="1.7.8"
+wget https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip
+unzip packer_${PACKER_VERSION}_linux_amd64.zip
+sudo mv packer /usr/local/bin/
+rm packer_${PACKER_VERSION}_linux_amd64.zip
+
 # Handle credentials and other setup
 CREDENTIAL_FILES=(
     "/tmp/final-github-token.xml"
@@ -64,5 +81,12 @@ done
 
 java -jar jenkins-cli.jar -s http://localhost:8080/ -auth $1:$2 groovy = < /tmp/seed-job.groovy
 
-# Stop Jenkins as final step if needed
+# Install Python, create virtual environment and install yamllint
+sudo apt-get install -y python3 python3-venv
+python3 -m venv /tmp/myenv
+source /tmp/myenv/bin/activate
+pip install --upgrade pip
+pip install yamllint
+
+# Stop Jenkins as the final step if needed
 sudo systemctl stop jenkins
