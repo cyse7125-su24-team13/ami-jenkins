@@ -61,16 +61,6 @@ build {
   }
 
   provisioner "file" {
-    source = "../ami-jenkins.groovy"
-    destination = "/tmp/ami-jenkins.groovy"
-  }
-
-  provisioner "file" {
-    source = "../static-site.groovy"
-    destination = "/tmp/static-site.groovy"
-  }
-
-  provisioner "file" {
     source      = "../jenkins-credentials/github-token.xml"
     destination = "/tmp/github-token.xml"
   }
