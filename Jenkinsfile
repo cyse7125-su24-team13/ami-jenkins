@@ -18,17 +18,6 @@ pipeline {
             }
         }
 
-        stage('Install and Configure Commitlint') {
-            steps {
-                sh '''
-                    sudo apt-get update
-                    sudo apt-get install -y nodejs npm
-                    sudo npm install -g @commitlint/{cli,config-conventional}
-                    echo "module.exports = { extends: ['@commitlint/config-conventional'] };" | sudo tee /var/lib/jenkins/commitlint.config.js
-                '''
-            }
-        }
-
         stage('Commit Message Lint') {
             steps {
                 sh '''
