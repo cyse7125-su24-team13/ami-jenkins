@@ -21,7 +21,7 @@ pipeline {
         stage('Commit Message Lint') {
             steps {
                 script {
-                    checkCommitMessage()
+                    checkCommitMessages()
                 }
             }
         }
@@ -90,14 +90,21 @@ def notifyGithub(commitId, status, description) {
     echo "GitHub API response: ${response}"
 }
 
-def checkCommitMessage() {
-    def commitMessage = sh(script: 'git log -1 --pretty=%B', returnStdout: true).trim()
+def checkCommitMessages() {
+    def commitMessages = sh(script: 'git log --pretty=format:%s origin/main..HEAD', returnStdout: true).trim().split('\n')
     def conventionalCommitRegex = /^(feat|fix|docs|style|refactor|perf|test|chore|build|ci|revert|wip)(\(.+\))?: .{1,50}/
 
-    if (!commitMessage.matches(conventionalCommitRegex)) {
-        error("Commit message does not follow the Conventional Commits specification. Commit message: ${commitMessage}")
+    if (commitMessages.size() == 0 || (commitMessages.size() == 1 && commitMessages[0] == '')) {
+        echo "No new commits to validate."
     } else {
-        echo "Commit message is valid."
+        for (commitMessage in commitMessages) {
+            if (commitMessage.startsWith("Merge ")) {
+                echo "Merge commit detected, skipping Conventional Commits check for this commit."
+            } else if (!commitMessage.matches(conventionalCommitRegex)) {
+                error("Commit message does not follow the Conventional Commits specification. Commit message: ${commitMessage}")
+            } else {
+                echo "Commit message is valid: ${commitMessage}"
+            }
+        }
     }
 }
-
