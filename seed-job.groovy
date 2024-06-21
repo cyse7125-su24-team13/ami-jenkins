@@ -309,7 +309,7 @@ multibranchPipelineJob('csye7125-infra-aws') {
                 }
                 node / 'traits' << 'org.jenkinsci.plugins.github__branch__source.ForkPullRequestDiscoveryTrait' {
                     strategyId(1)
-                    trust(class: 'org.jenkinsci.plugins.github__branch__source.ForkPullRequestDiscoveryTrait$TrustContributors')
+                    trust(class: 'org.jenkinsci.plugins.github__branch__source.ForkPullRequestDiscoveryTrait\$TrustContributors')
                 }
                 node / 'traits' << 'org.jenkinsci.plugins.github__branch__source.OriginPullRequestDiscoveryTrait' {
                     strategyId(1)
