@@ -40,6 +40,7 @@ source "amazon-ebs" "ubuntu" {
   instance_type = "t2.small"
   ssh_username  = "ubuntu"
   ami_name      = "jenkins-ami-{{timestamp}}"
+  subnet_id = "subnet-0120fd26fb654bd5a"
 }
 
 build {
