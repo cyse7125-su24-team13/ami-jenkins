@@ -11,6 +11,7 @@ String prStatusCheckJobName_ami = "ami-jenkins-jobdsl"
 String prStatusCheckJobName_helm = "helm-webapp-cve-processor-jobdsl"
 String webappCveProcessorJobName = "webapp-cve-processor-jobdsl"
 String dbMigrationJobName = "db-migration-jobdsl"
+String prStatusCheckJobName_aws = "infra-aws-jobdsl"
 
 String buildPushDockerJobDsl = """
 
@@ -291,6 +292,46 @@ multibranchPipelineJob('csye7125-DB-migration') {
 
 """
 
+String prStatusCheckJobDsl_aws = """
+multibranchPipelineJob('csye7125-infra-aws') {
+    description('Multibranch Pipeline job to build and validate Terraform configurations for pull requests.')
+
+    branchSources {
+        github {
+            id('csye7125-infra-aws-main')
+            repoOwner('cyse7125-su24-team13')
+            repository('infra-aws')
+            scanCredentialsId('github-token')
+
+            configure { node ->
+                node / 'traits' << 'jenkins.branch.BranchDiscoveryTrait' {
+                    strategyId(3)
+                }
+                node / 'traits' << 'org.jenkinsci.plugins.github__branch__source.ForkPullRequestDiscoveryTrait' {
+                    strategyId(1)
+                    trust(class: 'org.jenkinsci.plugins.github__branch__source.ForkPullRequestDiscoveryTrait$TrustContributors')
+                }
+                node / 'traits' << 'org.jenkinsci.plugins.github__branch__source.OriginPullRequestDiscoveryTrait' {
+                    strategyId(1)
+                }
+            }
+        }
+    }
+
+    factory {
+        workflowBranchProjectFactory {
+            scriptPath('Jenkinsfile')
+        }
+    }
+
+    triggers {
+        periodicFolderTrigger {
+            interval('1d')
+        }
+    }
+}
+"""
+
 
 // Function to create or update a job
 def createOrUpdateJob(String jobName, String jobDsl) {
@@ -326,3 +367,4 @@ createOrUpdateJob(prStatusCheckJobName_ami, prStatusCheckJobDsl_ami)
 createOrUpdateJob(prStatusCheckJobName_helm, prStatusCheckJobDsl_helm)
 createOrUpdateJob(webappCveProcessorJobName, webappCveProcessorJobDsl)
 createOrUpdateJob(dbMigrationJobName, dbMigrationJobDsl)
+createOrUpdateJob(prStatusCheckJobName_aws, prStatusCheckJobDsl_aws)
