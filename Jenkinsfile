@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         GITHUB_TOKEN = credentials('github-token')
-        GITHUB_REPO = 'cyse7125-su24-team13/k8s-yaml-manifests'
+        GITHUB_REPO = 'cyse7125-su24-team13/ami-jenkins'
         GITHUB_API_URL = 'https://api.github.com'
     }
 
