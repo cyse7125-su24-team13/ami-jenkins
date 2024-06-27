@@ -12,6 +12,7 @@ String prStatusCheckJobName_helm = "helm-webapp-cve-processor-jobdsl"
 String webappCveProcessorJobName = "webapp-cve-processor-jobdsl"
 String dbMigrationJobName = "db-migration-jobdsl"
 String prStatusCheckJobName_aws = "infra-aws-jobdsl"
+String webappCveConsumerJobName = "webapp-cve-consumer-jobdsl"
 
 String buildPushDockerJobDsl = """
 
@@ -332,6 +333,46 @@ multibranchPipelineJob('csye7125-infra-aws') {
 }
 """
 
+String webappCveConsumerJobDsl = """
+multibranchPipelineJob('csye7125-webapp-cve-consumer') {
+    description('Multibranch Pipeline job to build and validate YAML configurations for pull requests.')
+
+    branchSources {
+        github {
+            id('csye7125-webapp-cve-consumer-main')
+            repoOwner('cyse7125-su24-team13')
+            repository('webapp-cve-consumer')
+            scanCredentialsId('github-token')
+
+            configure { node ->
+                node / 'traits' << 'jenkins.branch.BranchDiscoveryTrait' {
+                    strategyId(3)
+                }
+                node / 'traits' << 'org.jenkinsci.plugins.github__branch__source.ForkPullRequestDiscoveryTrait' {
+                    strategyId(1)
+                    trust(class: 'org.jenkinsci.plugins.github__branch__source.ForkPullRequestDiscoveryTrait\$TrustContributors')
+                }
+                node / 'traits' << 'org.jenkinsci.plugins.github__branch__source.OriginPullRequestDiscoveryTrait' {
+                    strategyId(1)
+                }
+            }
+        }
+    }
+
+    factory {
+        workflowBranchProjectFactory {
+            scriptPath('Jenkinsfile')
+        }
+    }
+
+    triggers {
+        periodicFolderTrigger {
+            interval('1d')
+        }
+    }
+}
+"""
+
 
 // Function to create or update a job
 def createOrUpdateJob(String jobName, String jobDsl) {
@@ -368,3 +409,4 @@ createOrUpdateJob(prStatusCheckJobName_helm, prStatusCheckJobDsl_helm)
 createOrUpdateJob(webappCveProcessorJobName, webappCveProcessorJobDsl)
 createOrUpdateJob(dbMigrationJobName, dbMigrationJobDsl)
 createOrUpdateJob(prStatusCheckJobName_aws, prStatusCheckJobDsl_aws)
+createOrUpdateJob(webappCveConsumerJobName, webappCveConsumerJobDsl)
