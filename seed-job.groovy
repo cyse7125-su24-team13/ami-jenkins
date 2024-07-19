@@ -13,6 +13,7 @@ String webappCveProcessorJobName = "webapp-cve-processor-jobdsl"
 String dbMigrationJobName = "db-migration-jobdsl"
 String prStatusCheckJobName_aws = "infra-aws-jobdsl"
 String webappCveConsumerJobName = "webapp-cve-consumer-jobdsl"
+String helmEksAutoscalerJobName = "helm-eks-autoscaler-jobdsl"
 
 String buildPushDockerJobDsl = """
 
@@ -374,6 +375,47 @@ multibranchPipelineJob('csye7125-webapp-cve-consumer') {
 """
 
 
+String helmEksAutoscalerJobDsl = """
+multibranchPipelineJob('csye7125-helm-eks-autoscaler') {
+    description('Multibranch Pipeline job to build and validate Terraform configurations for pull requests.')
+
+    branchSources {
+        github {
+            id('csye7125-helm-eks-autoscaler-main')
+            repoOwner('cyse7125-su24-team13')
+            repository('helm-eks-autoscaler')
+            scanCredentialsId('github-token')
+
+            configure { node ->
+                node / 'traits' << 'jenkins.branch.BranchDiscoveryTrait' {
+                    strategyId(3)
+                }
+                node / 'traits' << 'org.jenkinsci.plugins.github__branch__source.ForkPullRequestDiscoveryTrait' {
+                    strategyId(1)
+                    trust(class: 'org.jenkinsci.plugins.github__branch__source.ForkPullRequestDiscoveryTrait\$TrustContributors')
+                }
+                node / 'traits' << 'org.jenkinsci.plugins.github__branch__source.OriginPullRequestDiscoveryTrait' {
+                    strategyId(1)
+                }
+            }
+        }
+    }
+
+    factory {
+        workflowBranchProjectFactory {
+            scriptPath('Jenkinsfile')
+        }
+    }
+
+    triggers {
+        periodicFolderTrigger {
+            interval('1d')
+        }
+    }
+}
+"""
+
+
 // Function to create or update a job
 def createOrUpdateJob(String jobName, String jobDsl) {
     def jenkins = Jenkins.getInstanceOrNull()
@@ -410,3 +452,4 @@ createOrUpdateJob(webappCveProcessorJobName, webappCveProcessorJobDsl)
 createOrUpdateJob(dbMigrationJobName, dbMigrationJobDsl)
 createOrUpdateJob(prStatusCheckJobName_aws, prStatusCheckJobDsl_aws)
 createOrUpdateJob(webappCveConsumerJobName, webappCveConsumerJobDsl)
+createOrUpdateJob(helmEksAutoscalerJobName, helmEksAutoscalerJobDsl)
