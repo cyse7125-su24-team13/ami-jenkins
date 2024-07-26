@@ -497,7 +497,6 @@ multibranchPipelineJob('csye7125-helm-cve-operator') {
 }
 """
 
-
 // Function to create or update a job
 def createOrUpdateJob(String jobName, String jobDsl) {
     def jenkins = Jenkins.getInstanceOrNull()
@@ -537,3 +536,4 @@ createOrUpdateJob(webappCveConsumerJobName, webappCveConsumerJobDsl)
 createOrUpdateJob(helmEksAutoscalerJobName, helmEksAutoscalerJobDsl)
 createOrUpdateJob(cveOperatorJobName, cveOperatorJobDsl)
 createOrUpdateJob(helmCveOperatorJobName, helmCveOperatorJobDsl)
+
