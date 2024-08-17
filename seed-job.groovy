@@ -16,6 +16,8 @@ String webappCveConsumerJobName = "webapp-cve-consumer-jobdsl"
 String helmEksAutoscalerJobName = "helm-eks-autoscaler-jobdsl"
 String cveOperatorJobName = "cve-operator-jobdsl"
 String helmCveOperatorJobName = "helm-cve-operator-jobdsl"
+String helmCveChatbotJobName = "helm-cve-chatbot-jobdsl"
+String finalProjectJobName = "final-project-jobdsl"
 
 String buildPushDockerJobDsl = """
 
@@ -497,6 +499,86 @@ multibranchPipelineJob('csye7125-helm-cve-operator') {
 }
 """
 
+String helmCveChatbotJobDsl = """
+multibranchPipelineJob('csye7125-helm-cve-chatbot') {
+    description('Multibranch Pipeline job to build and validate Terraform configurations for pull requests.')
+
+    branchSources {
+        github {
+            id('csye7125-helm-cve-chatbot')
+            repoOwner('cyse7125-su24-team13')
+            repository('helm-cve-chatbot')
+            scanCredentialsId('github-token')
+
+            configure { node ->
+                node / 'traits' << 'jenkins.branch.BranchDiscoveryTrait' {
+                    strategyId(3)
+                }
+                node / 'traits' << 'org.jenkinsci.plugins.github__branch__source.ForkPullRequestDiscoveryTrait' {
+                    strategyId(1)
+                    trust(class: 'org.jenkinsci.plugins.github__branch__source.ForkPullRequestDiscoveryTrait\$TrustContributors')
+                }
+                node / 'traits' << 'org.jenkinsci.plugins.github__branch__source.OriginPullRequestDiscoveryTrait' {
+                    strategyId(1)
+                }
+            }
+        }
+    }
+
+    factory {
+        workflowBranchProjectFactory {
+            scriptPath('Jenkinsfile')
+        }
+    }
+
+    triggers {
+        periodicFolderTrigger {
+            interval('1d')
+        }
+    }
+}
+"""
+
+String finalProjectJobDsl = """
+multibranchPipelineJob('csye7125-final-project') {
+    description('Multibranch Pipeline job to build and validate YAML configurations for pull requests.')
+
+    branchSources {
+        github {
+            id('csye7125-final-project')
+            repoOwner('cyse7125-su24-team13')
+            repository('final-project')
+            scanCredentialsId('github-token')
+
+            configure { node ->
+                node / 'traits' << 'jenkins.branch.BranchDiscoveryTrait' {
+                    strategyId(3)
+                }
+                node / 'traits' << 'org.jenkinsci.plugins.github__branch__source.ForkPullRequestDiscoveryTrait' {
+                    strategyId(1)
+                    trust(class: 'org.jenkinsci.plugins.github__branch__source.ForkPullRequestDiscoveryTrait\$TrustContributors')
+                }
+                node / 'traits' << 'org.jenkinsci.plugins.github__branch__source.OriginPullRequestDiscoveryTrait' {
+                    strategyId(1)
+                }
+            }
+        }
+    }
+
+    factory {
+        workflowBranchProjectFactory {
+            scriptPath('Jenkinsfile')
+        }
+    }
+
+    triggers {
+        periodicFolderTrigger {
+            interval('1d')
+        }
+    }
+}
+"""
+
 // Function to create or update a job
 def createOrUpdateJob(String jobName, String jobDsl) {
     def jenkins = Jenkins.getInstanceOrNull()
@@ -536,4 +618,5 @@ createOrUpdateJob(webappCveConsumerJobName, webappCveConsumerJobDsl)
 createOrUpdateJob(helmEksAutoscalerJobName, helmEksAutoscalerJobDsl)
 createOrUpdateJob(cveOperatorJobName, cveOperatorJobDsl)
 createOrUpdateJob(helmCveOperatorJobName, helmCveOperatorJobDsl)
-
+createOrUpdateJob(helmCveChatbotJobName, helmCveChatbotJobDsl)
+createOrUpdateJob(finalProjectJobName, finalProjectJobDsl)
